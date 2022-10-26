@@ -1,5 +1,8 @@
 const Pizzas = [
     {
+        id: 0,
+    },
+    {
         id: 1,
         nombre: "Fugazzeta",
         ingredientes: ["Salsa de tomate", "Queso", "Cebolla"],
@@ -47,7 +50,13 @@ const Pizzas = [
 const form = document.getElementById('form');
 const input = document.getElementById('input');
 const list = document.getElementById('list');
-let tasks = [];
+
+// 2- traer elementos del LS si existen
+let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+// 3- grabar en LS
+const saveLocalStorage = (taskList) => {
+  localStorage.setItem('tasks', JSON.stringify(taskList))
+};
 
 //Crear el elemento a renderizar en caso que el ID sea entre 1 y 7
 const createTask = task =>
@@ -77,25 +86,28 @@ const noNumber = () =>
 // Funcion que decide si el objeto dado, pertenece a uno de los de la lista o no
 const decider = (pizza) =>{
    /*  console.log(pizza); */
-    if (pizza == undefined){
+    if (pizza.id == 0){
+        tasks = []; // Limpiamos el local storage si el usuario no paso ningun numero
         return noNumber ();
     }
     else if (pizza.id < 0 || pizza.id > 7){
+        tasks = []; // Limpiamos el local storage si el usuario no paso un ID valido
         return wrongId (pizza);
     }
     else{
+        tasks = [pizza]; // Guarda en el local storage la ultima pizza cargada
         return createTask (pizza);
     }
 };
 
 // Renderizar la o las tareas y corre la funcion que decide a que grupo pertenece el ID
 renderTask = TodoList => {
-    list.innerHTML = TodoList.map(pizza => decider(pizza)).join('');
+    list.innerHTML = TodoList.map(pizza => decider(pizza));
 };
 
 //Funcion que detecta si el ID no esta entre el 1 y el 7, crea un objeto pizza con ese ID para usarlo en el mensaje
 const nuevoObjeto = (n)=>{
-    if (Number(n) < 0 || Number(n) > 7){
+    if (Pizzas.filter (((Pizza) => Pizza.id == n)) == null){ // !! FALTA CORREGIR ESTO // EN VEZ DE NULL, LO QUE DEVUELVE CUANDO EL FILTER NO ENCUENTR aca tendria que buscar si hay un objeto con ese ID
         return Pizzas.push({id: Number(n) ,nombre:'n',});
     }
     else {
@@ -114,8 +126,21 @@ const init = () => {
 
         // Filtra que pizza es la que le pasaron el numero de id
         const thisPizza = Pizzas.filter ((Pizza) => Pizza.id == task);
-        tasks = [...tasks, thisPizza[0]];
-        renderTask(tasks);
+        /* tasks = [thisPizza]; */
+        renderTask(thisPizza);
+        saveLocalStorage(tasks);
     })
+    document.addEventListener('DomContentLoaded', renderTask(tasks))
 }
 init();
+
+//NUEVO OBJETO QUE ANDA PERO SE REPITEN SI EL USUARIO PONE MUCHAS VECES EL MISMO NUMERO
+
+/* const nuevoObjeto = (n)=>{
+    if (Number(n) < 0 || Number(n) > 7){ // aca tendria que buscar si hay un objeto con ese ID
+        return Pizzas.push({id: Number(n) ,nombre:'n',});
+    }
+    else {
+        return;
+    }
+}; */
