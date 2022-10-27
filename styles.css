@@ -13,6 +13,20 @@ body{
     justify-content: center;
     align-items: center;
 }
+header{
+    background-color: white;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    color: #FFBD33;
+}
+header img{
+    width: 10rem;
+    margin-left: 2rem;
+}
+header h1{
+    margin-left: 2rem;
+}
 .form{
     display: flex;
     align-items: center;

@@ -107,11 +107,11 @@ renderTask = TodoList => {
 
 //Funcion que detecta si el ID no esta entre el 1 y el 7, crea un objeto pizza con ese ID para usarlo en el mensaje
 const nuevoObjeto = (n)=>{
-    if (Pizzas.filter (((Pizza) => Pizza.id == n)) == null){ // !! FALTA CORREGIR ESTO // EN VEZ DE NULL, LO QUE DEVUELVE CUANDO EL FILTER NO ENCUENTR aca tendria que buscar si hay un objeto con ese ID
-        return Pizzas.push({id: Number(n) ,nombre:'n',});
+    if (Pizzas.some ((Pizza) => Pizza.id == n)){
+        return;
     }
     else {
-        return;
+        return Pizzas.push({id: Number(n) ,nombre:'n',});
     }
 };
 
@@ -119,11 +119,10 @@ const nuevoObjeto = (n)=>{
 const init = () => {
     form.addEventListener('submit', e =>{
         e.preventDefault();
-        const task = input.value;
+        const task = input.value.trim();
         input.value = '';
-        //Detectamos si el numero que puso el usuario es uno del 1 al 7 y si no lo es creamos un objeto
+        //Detectamos si el numero que puso el usuario es pertenece a un ID ya creado, sino creamos uno
         nuevoObjeto (task);
-
         // Filtra que pizza es la que le pasaron el numero de id
         const thisPizza = Pizzas.filter ((Pizza) => Pizza.id == task);
         /* tasks = [thisPizza]; */
@@ -133,14 +132,3 @@ const init = () => {
     document.addEventListener('DomContentLoaded', renderTask(tasks))
 }
 init();
-
-//NUEVO OBJETO QUE ANDA PERO SE REPITEN SI EL USUARIO PONE MUCHAS VECES EL MISMO NUMERO
-
-/* const nuevoObjeto = (n)=>{
-    if (Number(n) < 0 || Number(n) > 7){ // aca tendria que buscar si hay un objeto con ese ID
-        return Pizzas.push({id: Number(n) ,nombre:'n',});
-    }
-    else {
-        return;
-    }
-}; */
